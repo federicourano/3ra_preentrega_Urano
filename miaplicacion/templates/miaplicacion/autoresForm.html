@@ -1,0 +1,21 @@
+{% extends 'miaplicacion/base.html' %}
+{% load static %}
+
+{% block titulo %}
+    Autores
+{% endblock titulo %}
+
+{% block cabecera %}
+    Agregar nuevo autor
+{% endblock cabecera %}
+
+
+{% block contenido %}
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Agregar">
+</form>
+{% endblock contenido %}

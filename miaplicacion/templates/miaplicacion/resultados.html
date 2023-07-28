@@ -1,0 +1,34 @@
+{% extends 'miaplicacion/base.html' %}
+{% load static %}
+
+{% block titulo %}
+    Libros
+{% endblock titulo %}
+
+{% block cabecera %}
+    Nombre del libro: {{ busqueda }}
+    {{ libro }}
+{% endblock cabecera %}
+    
+{% block contenido %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Genero</th>
+            <th>Paginas</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for libro in Libros %}
+            <tr>
+                <th>{{libro.id}}</th>
+                <th>{{libro.nombre}}</th>
+                <th>{{libro.genero}}</th>
+                <th>{{libro.cantidadDePaginas}}</th>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock contenido %}

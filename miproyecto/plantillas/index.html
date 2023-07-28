@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Home</title>
+</head>
+<body>
+    <h2>Bienvenidos a la Pagina de Django de la Comision 43865</h2>
+    <p style="color:blue">{{ nombre }}</p>
+    <p style="color:blue">{{ apellido }}</p>
+    <p style="color:blue">{{ dni }}</p>
+    <h4>{{ fecha_hoy }}</h4>
+
+    {% for nota in notas %}
+        
+        {% if nota > 5 %}   
+            <h4>Aprobado con {{nota}}</h4>
+        {% else %}
+            <h4>NO Aprobado con {{nota}}</h4>
+        {% endif %}
+        
+    {% endfor %}
+</body>
+</html>

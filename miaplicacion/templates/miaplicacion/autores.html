@@ -1,0 +1,34 @@
+{% extends 'miaplicacion/base.html' %}
+{% load static %}
+
+{% block titulo %}
+    Autores
+{% endblock titulo %}
+
+{% block cabecera %}
+    Autores asociados
+{% endblock cabecera %}
+
+{% block contenido %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Edad</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for autor in Autores %}
+        <tr>
+            <th>{{autor.id}}</th>
+            <th>{{autor.nombre}}</th>
+            <th>{{autor.apellido}}</th>
+            <th>{{autor.edad}}</th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<a class="btn btn-primary" href="{% url 'autorform' %}">Agregar autor</a>
+{% endblock contenido %}
