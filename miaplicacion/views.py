@@ -61,7 +61,7 @@ def StaffForm(request):
 def buscar2(request):
     if request.GET["busqueda"]:
         busqueda = request.GET["busqueda"]
-        libro = Libros.objects.filter(nombre__icontains=busqueda)
-        print(libro)
-        return render(request, "miaplicacion/resultados.html", {"busqueda":busqueda, "libro":libro})
+        libros = Libros.objects.filter(nombre__icontains=busqueda)
+        print(libros)
+        return render(request, "miaplicacion/resultados.html", {"busqueda":busqueda, "libros":libros})
     return HttpResponse("No se ingresaron datos para buscar")
