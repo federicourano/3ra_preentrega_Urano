@@ -11,7 +11,11 @@ class autorForm(forms.Form):
     edad = forms.IntegerField(label="Edad del autor", required=True)
 
 class staffForm(forms.Form):
-    nombre = forms.CharField(label="Nombre del nuevo staff", max_length=50, required=True)
-    apellido = forms.CharField(label="Apellido del nuevo staff", max_length=50, required=True)
-    email = forms.EmailField(label="Email del nuevo staff", required=True)
-    dni = forms.IntegerField(label="DNI del nuevo staff", required=True)
+    nombre = forms.CharField(label="Nombre del staff", max_length=50, required=True)
+    apellido = forms.CharField(label="Apellido del staff", max_length=50, required=True)
+    email = forms.EmailField(label="Email del staff", required=True)
+    dni = forms.IntegerField(label="DNI del staff", required=True)
+
+class sagasForm(forms.Form):
+    nombre = forms.CharField(label="Nombre de la saga", max_length=50, required=True)
+    cantidadDeLibros = forms.IntegerField(label="Cantidad de libros", required=True)

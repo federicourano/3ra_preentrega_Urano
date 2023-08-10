@@ -10,6 +10,7 @@
 {% endblock cabecera %}
     
 {% block contenido %}
+    <h2>Escriba el titulo del libro para buscar</h2>
     <form action="/miaplicacion/buscar2" method="get">
         {% csrf_token %}
         <input type="text" name="busqueda" id="busqueda">

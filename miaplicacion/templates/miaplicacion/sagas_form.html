@@ -1,0 +1,14 @@
+{% extends 'miaplicacion/base.html' %} 
+{% load static %} 
+{% block titulo %}Sagas{% endblock titulo %} 
+{% block cabecera %}Sagas{% endblock cabecera %} 
+{% block contenido %}
+    <h2>Estudiante</h2>
+    <form action="" method="POST">
+        {% csrf_token %} 
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Enviar">
+    </form>
+{% endblock contenido %}

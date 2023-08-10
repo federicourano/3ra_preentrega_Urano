@@ -1,62 +1,55 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
+from django.urls import reverse, reverse_lazy
 from .models import *
 from .forms import *
+from django.views.generic import ListView
+from django.views.generic import CreateView
+from django.views.generic import UpdateView
+from django.views.generic import DetailView
+from django.views.generic import DeleteView
 
 # Create your views here.
 def index(request):
     return render(request, "miaplicacion/base.html")
 
-def libros(request):
-    ctx = {"Libros": Libros.objects.all()}
-    return render(request, "miaplicacion/libros.html", ctx)
-
-def librosForm(request):
-    if request.method == "POST":
-        miForm = LibrosForm(request.POST)
-        if miForm.is_valid():
-            informacion = miForm.cleaned_data
-            libro = Libros(nombre=request.POST["nombre"], genero=request.POST["genero"], cantidadDePaginas=request.POST["cantidadDePaginas"])
-            libro.save()
-            return render(request, "miaplicacion/base.html")
-    else:
-        miForm = LibrosForm()
-    return render(request, "miaplicacion/librosForm.html", {"form":miForm})
-
 def buscarLibro(request):
     return render(request, "miaplicacion/buscarLibro.html")
 
-def autores(request):
-    ctx = {"Autores": Autor.objects.all()}
-    return render(request, "miaplicacion/autores.html", ctx)
+def sagas(request):
+    ctx = {"Sagas": Sagas.objects.all()}
+    return render(request, "miaplicacion/sagas.html", ctx)
 
-def autoresForm(request):
+def SagasForm(request):
     if request.method == "POST":
-        miForm = autorForm(request.POST)
+        miForm = sagasForm(request.POST)
         if miForm.is_valid():
             informacion = miForm.cleaned_data
-            autor = Autor(nombre=request.POST["nombre"], apellido=request.POST["apellido"], edad=request.POST["edad"])
-            autor.save()
+            saga = Sagas(nombre=request.POST["nombre"], cantidadDeLibros=request.POST["cantidadDeLibros"])
+            saga.save()
             return render(request, "miaplicacion/base.html")
     else:
-        miForm = autorForm()
-    return render(request, "miaplicacion/autoresForm.html", {"form":miForm})
+        miForm = sagasForm()
+    return render(request, "miaplicacion/librosForm.html", {"form":miForm})
 
-def staff(request):
-    ctx = {"Staff": Staff.objects.all()}
-    return render(request, "miaplicacion/staff.html", ctx)
-
-def StaffForm(request):
+def updateSagas(request, id_saga):
+    saga = Sagas.objects.get(id=id_saga)
     if request.method == "POST":
-        miForm = staffForm(request.POST)
+        miForm = sagasForm(request.POST)
         if miForm.is_valid():
-            informacion = miForm.cleaned_data
-            staff = Staff(nombre=request.POST["nombre"], apellido=request.POST["apellido"], email=request.POST["email"], dni=request.POST["dni"])
-            staff.save()
-            return render(request, "miaplicacion/base.html")
+            saga.nombre = miForm.cleaned_data.get("nombre")
+            saga.cantidadDeLibros = miForm.cleaned_data.get("cantidadDeLibros")
+            saga.save()
+            return redirect(reverse_lazy("Sagas"))
     else:
-        miForm = staffForm()
-    return render(request, "miaplicacion/staffForm.html", {"form":miForm})
+        miForm = sagasForm(initial={"nombre":saga.nombre, 
+                                     "cantidadDeLibros":saga.cantidadDeLibros})
+    return render(request, "miaplicacion/sagasForm.html", {"form": miForm})  
+
+def deleteSagas(request, id_saga):
+    saga = Sagas.objects.get(id=id_saga)
+    saga.delete()
+    return redirect(reverse_lazy("Sagas"))
 
 def buscar2(request):
     if request.GET["busqueda"]:
@@ -65,3 +58,83 @@ def buscar2(request):
         print(libros)
         return render(request, "miaplicacion/resultados.html", {"busqueda":busqueda, "libros":libros})
     return HttpResponse("No se ingresaron datos para buscar")
+
+class libroList(ListView):
+    model = Libros
+
+class libroCreate(CreateView):
+    model = Libros
+    fields = ['nombre', 'genero', 'cantidadDePaginas']
+    success_url = reverse_lazy('Libros')
+
+class libroDetail(DetailView):
+    model = Libros
+
+class libroUpdate(UpdateView):
+    model = Libros
+    fields = ['nombre', 'genero', 'cantidadDePaginas']
+    success_url = reverse_lazy('Libros')    
+
+class libroDelete(DeleteView):
+    model = Libros
+    success_url = reverse_lazy('Libros')
+
+class autorList(ListView):
+    model = Autor
+
+class autorCreate(CreateView):
+    model = Autor
+    fields =["nombre", "apellido", "edad"]
+    success_url = reverse_lazy("Autores")
+
+class autorDetail(DetailView):
+    model = Autor
+
+class autorUpdate(UpdateView):
+    model = Autor
+    fields = ['nombre', 'apellido', 'edad']
+    success_url = reverse_lazy('Autores')    
+
+class autorDelete(DeleteView):
+    model = Autor
+    success_url = reverse_lazy('Autores')
+
+class staffList(ListView):
+    model = Staff
+
+class staffCreate(CreateView):
+    model = Staff
+    fields = ['nombre', 'apellido', 'email', "dni"]
+    success_url = reverse_lazy('Staff')
+
+class staffDetail(DetailView):
+    model = Staff
+
+class staffUpdate(UpdateView):
+    model = Staff
+    fields = ['nombre', 'apellido', 'email', "dni"]
+    success_url = reverse_lazy('Staff')    
+
+class staffDelete(DeleteView):
+    model = Staff
+    success_url = reverse_lazy('Staff')
+
+class sagaList(ListView):
+    model = Sagas
+
+class sagaCreate(CreateView):
+    model = Sagas
+    fields = ['nombre', 'cantidadDeLibros']
+    success_url = reverse_lazy('Sagas')
+
+class sagaDetail(DetailView):
+    model = Sagas
+
+class sagaUpdate(UpdateView):
+    model = Sagas
+    fields = ['nombre', 'cantidadDeLibros']
+    success_url = reverse_lazy('Sagas')    
+
+class sagaDelete(DeleteView):
+    model = Sagas
+    success_url = reverse_lazy('Sagas')
