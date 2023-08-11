@@ -5,3 +5,5 @@ from .models import *
 admin.site.register(Libros)
 admin.site.register(Autor)
 admin.site.register(Staff)
+admin.site.register(Sagas)
+admin.site.register(Avatar)

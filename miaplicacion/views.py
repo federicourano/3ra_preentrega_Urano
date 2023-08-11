@@ -8,49 +8,20 @@ from django.views.generic import CreateView
 from django.views.generic import UpdateView
 from django.views.generic import DetailView
 from django.views.generic import DeleteView
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
     return render(request, "miaplicacion/base.html")
 
+@login_required
 def buscarLibro(request):
     return render(request, "miaplicacion/buscarLibro.html")
 
-def sagas(request):
-    ctx = {"Sagas": Sagas.objects.all()}
-    return render(request, "miaplicacion/sagas.html", ctx)
-
-def SagasForm(request):
-    if request.method == "POST":
-        miForm = sagasForm(request.POST)
-        if miForm.is_valid():
-            informacion = miForm.cleaned_data
-            saga = Sagas(nombre=request.POST["nombre"], cantidadDeLibros=request.POST["cantidadDeLibros"])
-            saga.save()
-            return render(request, "miaplicacion/base.html")
-    else:
-        miForm = sagasForm()
-    return render(request, "miaplicacion/librosForm.html", {"form":miForm})
-
-def updateSagas(request, id_saga):
-    saga = Sagas.objects.get(id=id_saga)
-    if request.method == "POST":
-        miForm = sagasForm(request.POST)
-        if miForm.is_valid():
-            saga.nombre = miForm.cleaned_data.get("nombre")
-            saga.cantidadDeLibros = miForm.cleaned_data.get("cantidadDeLibros")
-            saga.save()
-            return redirect(reverse_lazy("Sagas"))
-    else:
-        miForm = sagasForm(initial={"nombre":saga.nombre, 
-                                     "cantidadDeLibros":saga.cantidadDeLibros})
-    return render(request, "miaplicacion/sagasForm.html", {"form": miForm})  
-
-def deleteSagas(request, id_saga):
-    saga = Sagas.objects.get(id=id_saga)
-    saga.delete()
-    return redirect(reverse_lazy("Sagas"))
-
+@login_required
 def buscar2(request):
     if request.GET["busqueda"]:
         busqueda = request.GET["busqueda"]
@@ -59,82 +30,148 @@ def buscar2(request):
         return render(request, "miaplicacion/resultados.html", {"busqueda":busqueda, "libros":libros})
     return HttpResponse("No se ingresaron datos para buscar")
 
-class libroList(ListView):
+class libroList(LoginRequiredMixin, ListView):
     model = Libros
 
-class libroCreate(CreateView):
+class libroCreate(LoginRequiredMixin, CreateView):
     model = Libros
     fields = ['nombre', 'genero', 'cantidadDePaginas']
     success_url = reverse_lazy('Libros')
 
-class libroDetail(DetailView):
+class libroDetail(LoginRequiredMixin, DetailView):
     model = Libros
 
-class libroUpdate(UpdateView):
+class libroUpdate(LoginRequiredMixin, UpdateView):
     model = Libros
     fields = ['nombre', 'genero', 'cantidadDePaginas']
     success_url = reverse_lazy('Libros')    
 
-class libroDelete(DeleteView):
+class libroDelete(LoginRequiredMixin, DeleteView):
     model = Libros
     success_url = reverse_lazy('Libros')
 
-class autorList(ListView):
+class autorList(LoginRequiredMixin, ListView):
     model = Autor
 
-class autorCreate(CreateView):
+class autorCreate(LoginRequiredMixin, CreateView):
     model = Autor
     fields =["nombre", "apellido", "edad"]
     success_url = reverse_lazy("Autores")
 
-class autorDetail(DetailView):
+class autorDetail(LoginRequiredMixin, DetailView):
     model = Autor
 
-class autorUpdate(UpdateView):
+class autorUpdate(LoginRequiredMixin, UpdateView):
     model = Autor
     fields = ['nombre', 'apellido', 'edad']
     success_url = reverse_lazy('Autores')    
 
-class autorDelete(DeleteView):
+class autorDelete(LoginRequiredMixin, DeleteView):
     model = Autor
     success_url = reverse_lazy('Autores')
 
-class staffList(ListView):
+class staffList(LoginRequiredMixin, ListView):
     model = Staff
 
-class staffCreate(CreateView):
+class staffCreate(LoginRequiredMixin, CreateView):
     model = Staff
     fields = ['nombre', 'apellido', 'email', "dni"]
     success_url = reverse_lazy('Staff')
 
-class staffDetail(DetailView):
+class staffDetail(LoginRequiredMixin, DetailView):
     model = Staff
 
-class staffUpdate(UpdateView):
+class staffUpdate(LoginRequiredMixin, UpdateView):
     model = Staff
     fields = ['nombre', 'apellido', 'email', "dni"]
     success_url = reverse_lazy('Staff')    
 
-class staffDelete(DeleteView):
+class staffDelete(LoginRequiredMixin, DeleteView):
     model = Staff
     success_url = reverse_lazy('Staff')
 
-class sagaList(ListView):
+class sagaList(LoginRequiredMixin, ListView):
     model = Sagas
 
-class sagaCreate(CreateView):
+class sagaCreate(LoginRequiredMixin, CreateView):
     model = Sagas
     fields = ['nombre', 'cantidadDeLibros']
     success_url = reverse_lazy('Sagas')
 
-class sagaDetail(DetailView):
+class sagaDetail(LoginRequiredMixin, DetailView):
     model = Sagas
 
-class sagaUpdate(UpdateView):
+class sagaUpdate(LoginRequiredMixin, UpdateView):
     model = Sagas
     fields = ['nombre', 'cantidadDeLibros']
     success_url = reverse_lazy('Sagas')    
 
-class sagaDelete(DeleteView):
+class sagaDelete(LoginRequiredMixin, DeleteView):
     model = Sagas
     success_url = reverse_lazy('Sagas')
+
+def login_request(request):
+    if request.method == "POST":
+        miForm = AuthenticationForm(request, data=request.POST)
+        if miForm.is_valid():
+            usuario = miForm.cleaned_data.get("username")
+            clave = miForm.cleaned_data.get("password")
+            user = authenticate(username=usuario, password=clave)
+            if user is not None:
+                login(request, user)
+                return render(request, "miaplicacion/base.html", {"mensaje": f"Logueo satisfactorio, bienvenido {usuario}"})
+            else:
+                return render(request, "miaplicacion/login.html", {"form":miForm, "mensaje": "Usuario o contraseña incorrectos"})
+        else:
+            return render(request, "miaplicacion/login.html", {"form":miForm, "mensaje": "Usuario o contraseña incorrectos"})
+    miForm = AuthenticationForm()
+    return render(request, "miaplicacion/login.html", {"form":miForm})
+
+def register(request):
+    if request.method == 'POST':
+        form = RegistroUsuariosForm(request.POST) 
+        if form.is_valid(): 
+            usuario = form.cleaned_data.get('username')
+            form.save()
+            return render(request, "miaplicacion/base.html", {"mensaje":"Usuario Creado exitosamente"})        
+    else:
+        form = RegistroUsuariosForm()
+
+    return render(request, "miaplicacion/registro.html", {"form": form})
+
+@login_required
+def editarPerfil(request):
+    usuario = request.user
+    if request.method == "POST":
+        form = UserEditForm(request.POST)
+        if form.is_valid():
+            usuario.email = form.cleaned_data.get("email")
+            usuario.password1 = form.cleaned_data.get("password1")
+            usuario.password2 = form.cleaned_data.get("password2")
+            usuario.first_name = form.cleaned_data.get("first_name")
+            usuario.last_name = form.cleaned_data.get("last_name")
+            usuario.save()
+            return render(request, "miaplicacion/base.html")
+        else:
+            return render(request, "miaplicacion/editarForm.html", {"form":form})
+    else:
+        form = UserEditForm(instance=usuario)
+    return render(request, "miaplicacion/editarForm.html", {"form":form, "usuario":usuario.username})
+
+@login_required
+def agregarAvatar(request):
+    if request.method == "POST":
+        form = avatarForm(request.POST, request.FILES)
+        if form.is_valid():
+            u = User.objects.get(username=request.user)
+            avatarViejo = Avatar.objects.filter(user=u)
+            if len(avatarViejo) > 0:
+                avatarViejo[0].delete()
+            avatar = Avatar(user=u, imagen=form.cleaned_data["imagen"])
+            avatar.save()
+            imagen = Avatar.objects.get(user=request.user.id).imagen.url
+            request.session["avatar"] = imagen
+            return render(request, "miaplicacion/base.html")
+    else:
+        form = avatarForm()
+    return render(request, "miaplicacion/agregarAvatar.html", {"form":form})
