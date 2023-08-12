@@ -32,6 +32,7 @@
                     <a class="navbar-brand" href="{% url 'Staff' %}">Staff</a>
                     <a class="navbar-brand" href="{% url 'Sagas' %}">Sagas</a>
                     <a class="navbar-brand" href="{% url 'editar_perfil' %}">Editar perfil</a>
+                    <a class="navbar-brand" href="{% url 'editar_password' %}">Cambiar contraseña</a>
                     <p style="color:green">Bienvenido {{user.username|upper}}
                     <div>
                         <img src="{{ request.session.avatar }}" height="40px" weight="40px"/>
@@ -43,6 +44,7 @@
                     <a class="btn btn-info" href="{% url 'login' %}">Login</a>
                     <a class="btn btn-info" href="{% url 'register' %}">Registrarse</a>
                 {% endif %}
+                <a class="navbar-brand" href="{% url 'acerca_de_mi' %}">Acerca de mi</a>
             </div>
         </nav>
         <!-- Header-->

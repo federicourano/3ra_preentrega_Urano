@@ -1,23 +1,58 @@
-Hola tutores!
+Hola!!
 
-Esta es mi 3ra preentrega, espero que les guste.
+Esta es mi trabajo final, espero que les guste.
 
-Para acceder, deben ir al localhost:8000/miaplicacion/. Alli veran 5 botones.
- 
-Inicio, que los llevara nuevamente a localhost:8000/miaplicacion/ cada vez que lo cliqueen.
+Mi trabajo se llama "Libreria Virtual". Consiste, como su nombre indica, 
+en una libreria donde podremos ver informacion de libros, autores, sagas 
+y el staff que alli trabaja. Esta informacion solo es accecible una vez
+que hayamos creado un usuario y logueado. 
 
-Libros, el cual tiene una lista de todos los libros cargados a la Base de Datos, y 2 botones.
-Agregar libro, el cual deberan cargar los datos de "Nombre", "Genero" y "Paginas", y les permitira 
-cargar otro libro y lo guardara en la Base de Datos.
-Buscar libro, el cual podran ingresar el nombre de un libro y lo buscara, o partes de nombre de un libro y les
-apareceran todos los libros que contengan ese texto que hallan buscado
 
-Autores, el cual les aparecera una lista de todos los autores cargados a la Base de Datos, y 1 boton
-Agregar autor, el cual deberan cargar los datos de "Nombre", "Apellido", y "Edad", y les permitirar
-cargar otro autor y lo guardara en la Base de Datos.
+Para acceder, levantar el servidor y dirigirse a http://localhost:8000/miaplicacion/
 
-Staff, el cual tiene una lista de todo el staff cargado en la Base de Datos, y 1 boton.
-Agregar staff, el cual deberan cargar los datos de "Nombre", "Apellido", "Email", "DNI", y les permitira
-cargar a un nuevo staff y lo guardara en la Base de Datos.
 
-Administracion, el cual contiene todo lo del sitio admin de django.
+Para crear un usuario, hacer click en "registrarse" y rellenar con la info pedida.
+
+Para loguearse, hacer click en "Login" y rellenar los datos pedidos.
+
+Ya contamos con un superusuario creado, su username es "admin" y su contraseña es "coderhouse"
+
+
+
+Los modelos que uso son, justamente, libros, autores, sagas, y staff.
+
+Libros contiene el ID, nombre del libro y cantidad de paginas del libro.
+
+Autores contiene el ID, nombre, apellido y edad del autor.
+
+Sagas contiene el ID, nombre de la saga y cantidad de libros que conforman esa saga.
+
+Staff contiene el ID, nombre, apellido, dni, y email del staff
+
+
+Si estamos logueado, ademas de ver la informacion, podremos agregar, modificar o eliminar 
+informacion que hay en los modelos. Es decir, por ejemplo, en la parte de libros
+podremos agregar un libro, modificarlo, o borrarlo.
+
+Tambien, solo en la seccion de libros, contamos con un boton de busqueda, en el cual
+si escribimos el nombre del libro, nos traera todos los libros con ese nombre
+(Por ejemplo, si buscamos la palabra "el" nos traera todos los libros que contengan "el" en el nombre)
+
+Se puede editar la informacion del perfil del usuario logueado, es decir, su nombre y apellido y email
+en la seccion de "editar perfil". 
+Tambien se puede modificar su contraseña en la seccion de "Cambiar contraseña"
+
+Se puede cambiar su foto avatar, en la seccion "Cambiar avatar"
+
+Se puede hacer logout en la seccion de "Logout"
+
+Se puede acceder al panel de "Administracion" siendo un superusuario
+
+Y hay una seccion de "Acerca de mi" que tiene informacion mia, y de como la pase en el curso
+
+
+
+
+
+
+

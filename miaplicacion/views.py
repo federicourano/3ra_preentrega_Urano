@@ -12,10 +12,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
 
 # Create your views here.
 def index(request):
     return render(request, "miaplicacion/base.html")
+
+def acercaDeMi(request):
+    return render(request, "miaplicacion/acercaDeMi.html")
 
 @login_required
 def buscarLibro(request):
@@ -119,9 +125,15 @@ def login_request(request):
             user = authenticate(username=usuario, password=clave)
             if user is not None:
                 login(request, user)
-                return render(request, "miaplicacion/base.html", {"mensaje": f"Logueo satisfactorio, bienvenido {usuario}"})
+                try:
+                    avatar = Avatar.objects.get(user=request.user.id).imagen.url
+                except:
+                    avatar = '/media/avatares/default.jpg'
+                finally:
+                    request.session['avatar'] = avatar
+                return render(request, "miaplicacion/base.html")
             else:
-                return render(request, "miaplicacion/login.html", {"form":miForm, "mensaje": "Usuario o contraseña incorrectos"})
+                return render(request, "mimiaplicacion/login.html", {"form":miForm, "mensaje": "Usuario o contraseña incorrectos"})
         else:
             return render(request, "miaplicacion/login.html", {"form":miForm, "mensaje": "Usuario o contraseña incorrectos"})
     miForm = AuthenticationForm()
@@ -146,8 +158,6 @@ def editarPerfil(request):
         form = UserEditForm(request.POST)
         if form.is_valid():
             usuario.email = form.cleaned_data.get("email")
-            usuario.password1 = form.cleaned_data.get("password1")
-            usuario.password2 = form.cleaned_data.get("password2")
             usuario.first_name = form.cleaned_data.get("first_name")
             usuario.last_name = form.cleaned_data.get("last_name")
             usuario.save()
@@ -157,6 +167,22 @@ def editarPerfil(request):
     else:
         form = UserEditForm(instance=usuario)
     return render(request, "miaplicacion/editarForm.html", {"form":form, "usuario":usuario.username})
+
+@login_required
+def editarPassword(request):
+    usuario = request.user
+    if request.method == "POST":
+        form = PasswordChangeForm(user=usuario, data=request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return render(request, "miaplicacion/base.html")
+        else:
+            return render(request, "miaplicacion/editarForm.html", {"form":form})
+    else:
+        form = PasswordChangeForm(user=usuario)
+    return render(request, "miaplicacion/editarForm.html", {"form":form, "usuario":usuario.username})
+
 
 @login_required
 def agregarAvatar(request):

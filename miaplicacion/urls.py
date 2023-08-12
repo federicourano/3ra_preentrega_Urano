@@ -35,5 +35,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(template_name="miaplicacion/base.html"), name="logout"),
     path('register/', register, name="register"),
     path('editar_perfil/', editarPerfil, name="editar_perfil"),
+    path('editar_password/', editarPassword, name="editar_password"),
     path('agregar_avatar/', agregarAvatar, name="agregar_avatar"),
+
+    path('acerca_de_mi/', acercaDeMi, name="acerca_de_mi"),
 ]
